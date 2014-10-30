@@ -1,0 +1,4 @@
+build/
+Wxdoggy.egg-info/
+dist/
+*.py[co]
