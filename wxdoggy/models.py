@@ -14,9 +14,14 @@ class AccessToken(object):
 
 
 class WxUser(object):
-    def __init__(self, openid, subscribe, nickname, sex, **kwargs):
+    def __init__(self, openid, nickname, sex, subscribe,
+        city, province, headimgurl, unionid, **kwargs):
         self.openid = openid
-        self.subscribe = subscribe
         self.nickname = nickname
         self.sex = sex
-        self._other_info = kwargs
+        self.subscribe = subscribe
+        self.city = city
+        self.province = province
+        self.headimgurl = headimgurl
+        self.unionid = unionid
+        self._otherinfo = kwargs

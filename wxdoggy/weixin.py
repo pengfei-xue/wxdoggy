@@ -48,9 +48,6 @@ class Weixin(object):
         return url
 
     def get_access_token(self, code, grant_type='authorization_code'):
-        '''
-            http://mp.weixin.qq.com/wiki/index.php?title=网页授权获取用户基本信息
-        '''
         endpoint = ep.get_uri4('sns.oauth2.access_token')
 
         qs = 'appid=%s&secret=%s&code=%s&grant_type=%s' % (self.appid,
@@ -62,9 +59,9 @@ class Weixin(object):
 
     def get_userinfo(self, at, openid):
         '''
-            http://mp.weixin.qq.com/wiki/index.php?title=获取用户基本信息(UnionID机制)
+            http://mp.weixin.qq.com/wiki/index.php?title=网页授权获取用户基本信息
         '''
-        endpoint = ep.get_uri4('sns.userinfo')
+        endpoint = ep.get_uri4('cgibin.user.info')
 
         qs = 'access_token=%s&openid=%s&lang=zh_CN' % (at, openid)
 
