@@ -1,15 +1,8 @@
-#!-*- coding: utf8 -*-
-
-import requests
+#! -*- coding: utf8 -*-
 
 from .endpoints import Endpoints as ep
 from .models import AccessToken, WxUser
-
-
-class WeixinException(Exception):
-    def __init__(self, code, msg):
-        msg = '%s: %s' % (code, msg)
-        super(WeixinException, self).__init__(msg)
+from .utils import http_get
 
 
 class Weixin(object):
@@ -17,24 +10,6 @@ class Weixin(object):
         self.appid = appid
         self.appsecret = appsecret
         self.token = token
-
-    def _do_http_request(self, url, method='GET', headers=None, data=None):
-        method = method.lower()
-        assert method in ('get', 'post'), u'只支持GET和POST请求'
-        func = requests.get if method == 'get' else requests.post
-
-        resp = func(url, data=data, headers=headers)
-        obj = resp.json()
-        if 'errcode' in obj:
-            raise WeixinException(obj['errcode'], obj['errmsg'])
-
-        return obj
-
-    def _do_http_get(self, url, headers=None):
-        return self._do_http_request(url, headers=headers)
-
-    def _do_http_post(self, url, headers=None, data=None):
-        return self._do_http_request(url, 'POST', headers=headers,data=data)
 
     def get_authorize_url(self, redirect_uri, state=None,
         response_type='code', scope='snsapi_userinfo'):
@@ -54,17 +29,10 @@ class Weixin(object):
             self.appsecret, code, grant_type)
 
         url = '%s?%s' % (endpoint, qs)
-        resp = self._do_http_get(url)
+        resp = http_get(url)
         return AccessToken(**resp)
 
     def get_userinfo(self, at, openid):
-        '''
-            http://mp.weixin.qq.com/wiki/index.php?title=网页授权获取用户基本信息
-        '''
-        endpoint = ep.get_uri4('cgibin.user.info')
-
-        qs = 'access_token=%s&openid=%s&lang=zh_CN' % (at, openid)
-
-        url = '%s?%s' % (endpoint, qs)
-        resp = self._do_http_get(url)
-        return WxUser(**resp)
+        u = WxUser(openid)
+        u.get_userinfo(at)
+        return u
