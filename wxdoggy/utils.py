@@ -1,5 +1,6 @@
 #! -*- coding: utf8 -*-
 
+import json
 import random
 
 import requests
@@ -25,7 +26,7 @@ def _do_http_request(url, method='GET', headers=None, data=None):
     func = requests.get if method == 'get' else requests.post
 
     resp = func(url, data=data, headers=headers)
-    obj = resp.json()
+    obj = json.loads(resp.content)
     if 'errcode' in obj:
         raise WeixinException(obj['errcode'], obj['errmsg'])
 
